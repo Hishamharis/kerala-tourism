@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_CLAUDE_API_KEY;
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 export async function generateItinerary({ districts, days, styles, budget }) {
   if (!API_KEY || API_KEY === 'your_key_here') {
@@ -6,21 +6,8 @@ export async function generateItinerary({ districts, days, styles, budget }) {
     return generateMockItinerary({ districts, days, styles, budget });
   }
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 2048,
-      messages: [
-        {
-          role: 'user',
-          content: `Create a detailed ${days}-day Kerala travel itinerary for: ${districts.join(', ')}.
+  try {
+    const prompt = `Create a detailed ${days}-day Kerala travel itinerary for: ${districts.join(', ')}.
 Travel style: ${styles.join(', ')}.
 Budget: ${budget}.
 
@@ -38,21 +25,43 @@ Schema:
     "food": "Must-try dish today",
     "tip": "Local insider tip"
   }
-]`,
-        },
-      ],
-    }),
-  });
+]`;
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`API call failed: ${err}`);
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 2048,
+            responseMimeType: 'application/json',
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('[Gemini] API error:', err);
+      throw new Error(`API call failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+    if (!text) {
+      throw new Error('Empty response from Gemini');
+    }
+
+    const clean = text.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch (err) {
+    console.error('[Gemini] Falling back to mock data:', err.message);
+    return generateMockItinerary({ districts, days, styles, budget });
   }
-
-  const data = await response.json();
-  const text = data.content[0].text.trim();
-  const clean = text.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
 }
 
 function generateMockItinerary({ districts, days }) {
