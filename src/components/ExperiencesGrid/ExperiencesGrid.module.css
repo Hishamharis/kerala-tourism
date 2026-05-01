@@ -248,17 +248,10 @@
   width: 100%;
   height: 320px;
   overflow: hidden;
-  background: #0a130e;
-}
-
-.modalHeroImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  transition: opacity 0.5s ease;
+  background-color: #0a130e;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .modalHeroOverlay {

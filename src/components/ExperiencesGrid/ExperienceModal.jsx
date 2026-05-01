@@ -50,12 +50,10 @@ export default function ExperienceModal({ experience, onClose }) {
             </button>
 
             {/* Hero image with gallery */}
-            <div className={styles.modalHero}>
-              <img
-                src={gallery?.[activeImg] || image}
-                alt={title}
-                className={styles.modalHeroImg}
-              />
+            <div
+              className={styles.modalHero}
+              style={{ backgroundImage: `url(${gallery?.[activeImg] || image})` }}
+            >
               <div className={styles.modalHeroOverlay} />
               <div className={styles.modalHeroContent}>
                 <span className={styles.modalIcon}>{icon}</span>
