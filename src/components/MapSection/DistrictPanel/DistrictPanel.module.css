@@ -1,0 +1,269 @@
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 60vw;
+  height: 100vh;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.panelBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.panelOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 15, 10, 0.92), rgba(13, 40, 24, 0.88));
+  z-index: 1;
+}
+
+.panelContent {
+  position: relative;
+  z-index: 2;
+  padding: 32px 40px;
+  min-height: 100vh;
+}
+
+.topBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.backBtn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+  padding: 8px 0;
+}
+
+.backBtn:hover {
+  color: var(--gold);
+}
+
+.districtName {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.districtTagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+.ratingBadge {
+  background: var(--gold);
+  color: var(--forest);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.tabBody {
+  margin-top: 24px;
+}
+
+/* Overview */
+.overview { }
+
+.description {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.infoCard {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.infoLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.infoValue {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.highlightsTitle {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.highlightPill {
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(26, 107, 60, 0.2);
+  border: 1px solid rgba(26, 107, 60, 0.3);
+  border-radius: 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Tab content shared */
+.tabList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tabCard {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  transition: background 0.2s;
+}
+
+.tabCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tabCardTitle {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.tabCardSub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Food grid */
+.foodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.foodCard {
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.foodCard:hover {
+  transform: translateY(-4px);
+}
+
+.foodName {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.foodBadge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* Festivals timeline */
+.festivalTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 24px;
+  border-left: 2px solid rgba(244, 162, 40, 0.3);
+}
+
+.festivalItem {
+  position: relative;
+}
+
+.festivalDot {
+  position: absolute;
+  left: -31px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--dark);
+}
+
+.festivalName {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.festivalMonth {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .panel { width: 100vw; }
+  .panelContent { padding: 24px 20px; }
+  .infoGrid { grid-template-columns: 1fr; }
+  .foodGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .panel { width: 75vw; }
+}

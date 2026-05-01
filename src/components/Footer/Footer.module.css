@@ -1,0 +1,140 @@
+.footer {
+  position: relative;
+  background: var(--forest);
+  overflow: hidden;
+}
+
+.watermark {
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  font-family: var(--font-serif);
+  font-size: 20vw;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.03);
+  pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 32px 48px;
+  display: flex;
+  gap: 80px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  min-width: 200px;
+}
+
+.logo {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 20px;
+}
+
+.socials {
+  display: flex;
+  gap: 10px;
+}
+
+.socialIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s;
+}
+
+.socialIcon:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--forest);
+  transform: scale(1.1);
+}
+
+.links {
+  flex: 1;
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.linkCol {
+  min-width: 140px;
+}
+
+.colTitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 16px;
+}
+
+.link {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--gold);
+}
+
+.bottom {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.visitors {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    gap: 40px;
+    padding: 60px 16px 32px;
+  }
+  .links { gap: 24px; }
+  .linkCol { min-width: 45%; }
+  .bottom { padding: 16px; flex-direction: column; text-align: center; }
+}

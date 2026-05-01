@@ -1,0 +1,211 @@
+.section {
+  position: relative;
+  height: 100vh;
+  background: var(--forest);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heading {
+  text-align: center;
+  padding: 0 32px;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.peakBand {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50%;
+  height: 200px;
+  background: rgba(244, 162, 40, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.peakBand span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(244, 162, 40, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+}
+
+.trackWrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: visible;
+}
+
+.track {
+  display: flex;
+  gap: 32px;
+  padding: 0 80px;
+  align-items: center;
+  will-change: transform;
+}
+
+.card {
+  flex: 0 0 280px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+}
+
+.above {
+  margin-bottom: 120px;
+}
+
+.below {
+  margin-top: 120px;
+}
+
+.featured {
+  flex: 0 0 340px;
+  background: rgba(244, 162, 40, 0.08);
+  border-color: rgba(244, 162, 40, 0.25);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--gold);
+  color: var(--forest);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.cardMonth {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.cardLocation {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+}
+
+.cardName {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.cardDesc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 80px;
+  margin-top: 20px;
+}
+
+.monthMark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.1em;
+}
+
+.monthDot {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.peakDot {
+  background: var(--gold);
+}
+
+@media (max-width: 768px) {
+  .track { gap: 16px; padding: 0 24px; }
+  .card { flex: 0 0 240px; padding: 20px; }
+  .featured { flex: 0 0 280px; }
+  .above { margin-bottom: 60px; }
+  .below { margin-top: 60px; }
+  .timeline { padding: 0 24px; }
+}
+
+/* Scroll progress bar */
+.progressWrap {
+  position: absolute;
+  bottom: 24px;
+  left: 80px;
+  right: 80px;
+  z-index: 5;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--jungle));
+  border-radius: 2px;
+  transition: width 0.1s ease-out;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  .progressWrap { left: 24px; right: 24px; }
+}
