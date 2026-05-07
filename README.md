@@ -30,7 +30,7 @@ If the key is missing or the model returns invalid JSON, the function falls back
 - **API:** `POST /api/generate-itinerary` - rewritten on Netlify to `generate-itinerary` serverless function (`netlify.toml`).
 - **Security:** Gemini calls run only on the server; the browser never sees the API key.
 
-Replace placeholder URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` (`https://example.com`) with your real deploy URL.
+Production URL is already set in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to `https://kerala-gods-own-country-app.netlify.app/`.
 
 ## Deployment (Netlify)
 
