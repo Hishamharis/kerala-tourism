@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useFocusTrap } from '../../../hooks/useFocusTrap';
 import { AnimatePresence, motion } from 'framer-motion';
 import { districtData } from '../../../data/districts';
 import TabNav from './TabNav';
@@ -20,7 +21,10 @@ const tabContent = {
 
 export default function DistrictPanel({ district, isOpen, onClose }) {
   const [tab, setTab] = useState('overview');
+  const panelRef = useRef(null);
   const data = district ? districtData[district] : null;
+
+  useFocusTrap(isOpen && !!data, panelRef, tab);
 
   if (!data) return null;
 
@@ -69,7 +73,11 @@ export default function DistrictPanel({ district, isOpen, onClose }) {
     <AnimatePresence>
       {isOpen && (
         <motion.aside
+          ref={panelRef}
           className={styles.panel}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="district-panel-title"
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
@@ -80,9 +88,9 @@ export default function DistrictPanel({ district, isOpen, onClose }) {
 
           <div className={styles.panelContent}>
             <div className={styles.topBar}>
-              <button className={styles.backBtn} onClick={onClose}>← Back to Map</button>
+              <button type="button" className={styles.backBtn} onClick={onClose}>← Back to Map</button>
               <div>
-                <h2 className={styles.districtName}>{district}</h2>
+                <h2 id="district-panel-title" className={styles.districtName}>{district}</h2>
                 <p className={styles.districtTagline}>&ldquo;{data.tagline}&rdquo;</p>
               </div>
               <div className={styles.ratingBadge}>★ {data.rating}</div>

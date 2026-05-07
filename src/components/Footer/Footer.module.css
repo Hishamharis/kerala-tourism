@@ -75,6 +75,27 @@
   transform: scale(1.1);
 }
 
+.socialDisabled {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: default;
+}
+
+.linkMuted {
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 10px;
+}
+
 .links {
   flex: 1;
   display: flex;

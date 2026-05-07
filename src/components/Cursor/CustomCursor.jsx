@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import styles from './CustomCursor.module.css';
 
 export default function CustomCursor() {
@@ -6,15 +6,15 @@ export default function CustomCursor() {
   const ringRef = useRef(null);
   const pos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
-  const [isTouch, setIsTouch] = useState(false);
+  const isTouch = useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches,
+    []
+  );
   const [hoverType, setHoverType] = useState(null);
   const rafRef = useRef(null);
 
   useEffect(() => {
-    if (window.matchMedia('(pointer: coarse)').matches) {
-      setIsTouch(true);
-      return;
-    }
+    if (isTouch) return undefined;
 
     const onMove = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
@@ -52,7 +52,7 @@ export default function CustomCursor() {
       window.removeEventListener('mouseover', onOver);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isTouch]);
 
   if (isTouch) return null;
 

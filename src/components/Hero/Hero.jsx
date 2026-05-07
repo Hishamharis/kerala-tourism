@@ -20,6 +20,24 @@ export default function Hero() {
   const contentRef = useRef(null);
 
   useEffect(() => {
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      gsap.set(`.${styles.nav}`, { y: 0, opacity: 1 });
+      gsap.set(`.${styles.eyebrowLine}`, { width: 48 });
+      gsap.set(`.${styles.eyebrow}`, { opacity: 1, y: 0 });
+      gsap.set(`.${styles.titleSolid}`, { opacity: 1, y: 0 });
+      gsap.set(`.${styles.titleOutline}`, { opacity: 1, y: 0 });
+      gsap.set(`.${styles.subtitle}`, { opacity: 1, y: 0 });
+      gsap.set(`.${styles.buttons}`, { opacity: 1, y: 0 });
+      gsap.set(`.${styles.scrollHint}`, { opacity: 0.7 });
+      gsap.set(`.${styles.statsBar}`, { y: 0, opacity: 1 });
+      gsap.set(`.${styles.sideText}`, { opacity: 0.5 });
+      return undefined;
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.3 });
 
@@ -34,7 +52,6 @@ export default function Hero() {
         .fromTo(`.${styles.statsBar}`, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 2.2)
         .fromTo(`.${styles.sideText}`, { opacity: 0 }, { opacity: 0.5, duration: 0.4 }, 2.0);
 
-      // Parallax on scroll
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: 'top top',
@@ -70,6 +87,11 @@ export default function Hero() {
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXpZnNJkek5nCXfNGxmARlZvz4LfQfpCndG8dEAe-LoXHHaWoodHX6OaqLRn3G43dA0i9CtQGaVewEfA3NSjzTM7pjh-mbLK8DF30ZdSFdZ7ZSuBYNXOKVJKPqNLi_kaJ4N_7IKjrj6hJDxgDo-ahREspAI-z4l3Do3la1MezF7YB0pQsCZ1QPuMHKaEenLnInAR7Rran8BJFCJIj9U0oQypqAf_-IVKq6HAkgZBy9-T2pDBKFfJk1jbEzBvL5mltrydCdXWax-jw"
           alt="Kerala backwaters at sunrise"
           className={styles.bgImg}
+          width={1920}
+          height={1080}
+          fetchPriority="high"
+          decoding="async"
+          loading="eager"
         />
         <div className={styles.overlayGradient} />
         <div className={styles.overlayTint} />
@@ -87,7 +109,7 @@ export default function Hero() {
             <a href="#itinerary-section" className={styles.navLink}>Plan Your Trip</a>
             <a href="#festivals-section" className={styles.navLink}>About</a>
           </div>
-          <button className={styles.navCta} onClick={scrollToPlanner}>Book a Stay</button>
+          <button type="button" className={styles.navCta} onClick={scrollToPlanner}>Book a Stay</button>
         </div>
       </nav>
 
@@ -117,6 +139,7 @@ export default function Hero() {
         {/* Buttons */}
         <div className={styles.buttons}>
           <motion.button
+            type="button"
             className={styles.btnPrimary}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -130,6 +153,7 @@ export default function Hero() {
             </svg>
           </motion.button>
           <motion.button
+            type="button"
             className={styles.btnSecondary}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}

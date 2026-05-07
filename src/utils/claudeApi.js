@@ -1,70 +1,64 @@
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+/** Calls Netlify function `/api/generate-itinerary` (same-origin on deploy). Local `vite` has no function → mock fallback. */
 
+const API_PATH = '/api/generate-itinerary';
+
+export function validateItineraryArray(data) {
+  if (!Array.isArray(data) || data.length === 0) return false;
+  const keys = ['day', 'location', 'title', 'morning', 'afternoon', 'evening', 'stay', 'food', 'tip'];
+  return data.every((row) => {
+    if (!row || typeof row !== 'object') return false;
+    return keys.every((k) => typeof row[k] === 'string' && row[k].length > 0);
+  });
+}
+
+/**
+ * @returns {{ itinerary: Array, warning?: string }}
+ */
 export async function generateItinerary({ districts, days, styles, budget }) {
-  if (!API_KEY || API_KEY === 'your_key_here') {
-    // Return mock data for demo
-    return generateMockItinerary({ districts, days, styles, budget });
-  }
-
   try {
-    const prompt = `Create a detailed ${days}-day Kerala travel itinerary for: ${districts.join(', ')}.
-Travel style: ${styles.join(', ')}.
-Budget: ${budget}.
-
-Respond ONLY with a valid JSON array. No markdown, no code fences, no explanation.
-Schema:
-[
-  {
-    "day": 1,
-    "location": "District Name",
-    "title": "Catchy day title",
-    "morning": "Morning activity description",
-    "afternoon": "Afternoon activity description",
-    "evening": "Evening activity description",
-    "stay": "Accommodation type",
-    "food": "Must-try dish today",
-    "tip": "Local insider tip"
-  }
-]`;
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 2048,
-            responseMimeType: 'application/json',
-          },
-        }),
-      }
-    );
+    const response = await fetch(API_PATH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ districts, days, styles, budget }),
+    });
 
     if (!response.ok) {
-      const err = await response.text();
-      console.error('[Gemini] API error:', err);
-      throw new Error(`API call failed: ${response.status}`);
+      const text = await response.text().catch(() => '');
+      console.warn('[Itinerary] API unavailable:', response.status, text);
+      return {
+        itinerary: generateMockItinerary({ districts, days, styles, budget }),
+        warning:
+          response.status === 404
+            ? 'AI endpoint unavailable locally — showing sample itinerary. Run `netlify dev` or deploy to Netlify for live AI.'
+            : `Request failed (${response.status}); showing sample itinerary.`,
+      };
     }
 
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    const payload = await response.json();
+    let itinerary = payload.itinerary ?? payload;
 
-    if (!text) {
-      throw new Error('Empty response from Gemini');
+    if (!validateItineraryArray(itinerary)) {
+      console.warn('[Itinerary] Response failed validation');
+      return {
+        itinerary: generateMockItinerary({ districts, days, styles, budget }),
+        warning: payload.warning || 'Invalid itinerary shape from server; showing sample itinerary.',
+      };
     }
 
-    const clean = text.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    const headerWarning = response.headers.get('X-Itinerary-Warning');
+    const warning = payload.warning || headerWarning || undefined;
+
+    return { itinerary, warning };
   } catch (err) {
-    console.error('[Gemini] Falling back to mock data:', err.message);
-    return generateMockItinerary({ districts, days, styles, budget });
+    console.error('[Itinerary] Falling back to mock:', err.message);
+    return {
+      itinerary: generateMockItinerary({ districts, days, styles, budget }),
+      warning: 'Could not reach itinerary service — showing sample itinerary.',
+    };
   }
 }
 
-function generateMockItinerary({ districts, days }) {
+export function generateMockItinerary({ districts, days }) {
   const activities = {
     morning: [
       'Start with a sunrise yoga session by the lakeside',

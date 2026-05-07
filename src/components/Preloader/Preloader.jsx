@@ -57,6 +57,10 @@ export default function Preloader({ onComplete }) {
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtbx-Zq3BlowEPwDTUWrXhIUe-ayxxeWZUWZbtGOOFX1luxWkXJgon24NsCAtngpXsJw4igUcqSnZy12qNl9i29licNmdJzoJ6jeUOMixRNRfahOsKYzhRIAhIDxeUdML-xXwUkcS9k_wG5CrOsbYtKnUdGa-NGBmkoJKLABi3c7j5wFqdNu_YllNCkgTgjCtEr8d_Wrvgk3KKHSb0ArResl653K0Knt2EcIuHuWYuncpwEHaIvbxyVKKANkfc2azlCc0O05ytWfg"
           alt="Kerala backwaters aerial view"
           className={styles.bgImg}
+          width={1920}
+          height={1080}
+          decoding="async"
+          loading="lazy"
         />
         <div className={styles.bgOverlay} />
       </div>

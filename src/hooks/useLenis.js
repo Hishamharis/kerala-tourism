@@ -7,6 +7,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function useLenis() {
   useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -20,11 +26,8 @@ export function useLenis() {
     });
     gsap.ticker.lagSmoothing(0);
 
-    window.__lenis = lenis;
-
     return () => {
       lenis.destroy();
-      window.__lenis = null;
     };
   }, []);
 }

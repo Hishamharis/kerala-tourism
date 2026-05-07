@@ -150,7 +150,11 @@ export default function ExperiencesGrid() {
         </div>
       </div>
 
-      <ExperienceModal experience={selectedExp} onClose={() => setSelectedExp(null)} />
+      <ExperienceModal
+        key={selectedExp?.title ?? 'closed'}
+        experience={selectedExp}
+        onClose={() => setSelectedExp(null)}
+      />
     </section>
   );
 }

@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import styles from './ExperiencesGrid.module.css';
 
 export default function ExperienceModal({ experience, onClose }) {
   const overlayRef = useRef(null);
+  const modalRef = useRef(null);
   const [activeImg, setActiveImg] = useState(0);
+
+  useFocusTrap(!!experience, modalRef);
 
   useEffect(() => {
     if (experience) {
       document.body.style.overflow = 'hidden';
-      setActiveImg(0);
     } else {
       document.body.style.overflow = '';
     }
@@ -31,6 +34,7 @@ export default function ExperienceModal({ experience, onClose }) {
         <motion.div
           className={styles.modalOverlay}
           ref={overlayRef}
+          role="presentation"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -38,14 +42,18 @@ export default function ExperienceModal({ experience, onClose }) {
           onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
         >
           <motion.div
+            ref={modalRef}
             className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="experience-modal-title"
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.97 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Close button */}
-            <button className={styles.modalClose} onClick={onClose} aria-label="Close">
+            <button type="button" className={styles.modalClose} onClick={onClose} aria-label="Close">
               ✕
             </button>
 
@@ -57,7 +65,7 @@ export default function ExperienceModal({ experience, onClose }) {
               <div className={styles.modalHeroOverlay} />
               <div className={styles.modalHeroContent}>
                 <span className={styles.modalIcon}>{icon}</span>
-                <h2 className={styles.modalTitle}>{title}</h2>
+                <h2 id="experience-modal-title" className={styles.modalTitle}>{title}</h2>
                 <div className={styles.modalTags}>
                   {districts?.map(d => <span key={d} className={styles.modalTag}>{d}</span>)}
                 </div>
@@ -68,6 +76,7 @@ export default function ExperienceModal({ experience, onClose }) {
                 <div className={styles.galleryDots}>
                   {gallery.map((_, i) => (
                     <button
+                      type="button"
                       key={i}
                       className={`${styles.galleryDot} ${i === activeImg ? styles.galleryDotActive : ''}`}
                       onClick={(e) => { e.stopPropagation(); setActiveImg(i); }}

@@ -5,20 +5,23 @@ export default function AIItineraryTab({ district }) {
   const [loading, setLoading] = useState(false);
   const [itinerary, setItinerary] = useState(null);
   const [error, setError] = useState(null);
+  const [warning, setWarning] = useState(null);
 
   const handleGenerate = async () => {
     setLoading(true);
     setError(null);
+    setWarning(null);
     try {
-      const result = await generateItinerary({
+      const { itinerary: rows, warning: w } = await generateItinerary({
         districts: [district],
         days: 3,
         styles: ['Culture', 'Nature'],
         budget: 'Mid-range',
       });
-      setItinerary(result);
-    } catch (e) {
-      setError('Failed to generate. Check API key or try again.');
+      setItinerary(rows);
+      if (w) setWarning(w);
+    } catch {
+      setError('Failed to generate. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -31,6 +34,7 @@ export default function AIItineraryTab({ district }) {
       </p>
 
       <button
+        type="button"
         onClick={handleGenerate}
         disabled={loading}
         style={{
@@ -54,6 +58,12 @@ export default function AIItineraryTab({ district }) {
 
       {error && (
         <p style={{ color: 'var(--coral)', fontSize: '13px', marginBottom: '12px' }}>{error}</p>
+      )}
+
+      {warning && (
+        <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '12px', marginBottom: '12px', lineHeight: 1.5 }}>
+          {warning}
+        </p>
       )}
 
       {itinerary && (

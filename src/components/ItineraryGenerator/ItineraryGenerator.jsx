@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { districtNames } from '../../data/districts';
 import { generateItinerary } from '../../utils/claudeApi';
@@ -28,6 +28,7 @@ export default function ItineraryGenerator() {
   const [selectedStyles, setSelectedStyles] = useState([]);
   const [budget, setBudget] = useState('mid');
   const [itinerary, setItinerary] = useState([]);
+  const [itineraryWarning, setItineraryWarning] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState('');
   const [error, setError] = useState(null);
@@ -41,10 +42,9 @@ export default function ItineraryGenerator() {
       'Almost there...',
     ];
     let i = 0;
-    setLoadingMsg(msgs[0]);
     const id = setInterval(() => {
-      i++;
       setLoadingMsg(msgs[i % msgs.length]);
+      i++;
     }, 1200);
     return () => clearInterval(id);
   }, [loading]);
@@ -67,18 +67,21 @@ export default function ItineraryGenerator() {
       return;
     }
     setLoading(true);
+    setLoadingMsg('Reading the backwaters...');
     setItinerary([]);
+    setItineraryWarning(null);
     setError(null);
     try {
-      const result = await generateItinerary({
+      const { itinerary: rows, warning } = await generateItinerary({
         districts: selectedDistricts,
         days,
         styles: selectedStyles.length ? selectedStyles : ['General'],
         budget: budgetOptions.find((b) => b.key === budget)?.label || 'Mid-range',
       });
-      setItinerary(result);
-    } catch (e) {
-      setError('Generation failed. Check your API key or try again.');
+      setItinerary(rows);
+      if (warning) setItineraryWarning(warning);
+    } catch {
+      setError('Generation failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -116,6 +119,7 @@ export default function ItineraryGenerator() {
             <div className={styles.chips}>
               {districtNames.map((name) => (
                 <button
+                  type="button"
                   key={name}
                   className={`${styles.chip} ${selectedDistricts.includes(name) ? styles.chipActive : ''}`}
                   onClick={() => toggleDistrict(name)}
@@ -148,6 +152,7 @@ export default function ItineraryGenerator() {
               <div className={styles.stylePills}>
                 {travelStyles.map((s) => (
                   <button
+                    type="button"
                     key={s.label}
                     className={`${styles.pill} ${selectedStyles.includes(s.label) ? styles.pillActive : ''}`}
                     onClick={() => toggleStyle(s.label)}
@@ -165,6 +170,7 @@ export default function ItineraryGenerator() {
             <div className={styles.budgetCards}>
               {budgetOptions.map((b) => (
                 <button
+                  type="button"
                   key={b.key}
                   className={`${styles.budgetCard} ${budget === b.key ? styles.budgetActive : ''}`}
                   onClick={() => setBudget(b.key)}
@@ -179,6 +185,7 @@ export default function ItineraryGenerator() {
           {error && <p className={styles.error}>{error}</p>}
 
           <button
+            type="button"
             className={styles.generateBtn}
             onClick={handleGenerate}
             disabled={loading}
@@ -187,7 +194,9 @@ export default function ItineraryGenerator() {
           </button>
         </motion.div>
 
-        {itinerary.length > 0 && <ItineraryResult itinerary={itinerary} />}
+        {itinerary.length > 0 && (
+          <ItineraryResult itinerary={itinerary} warning={itineraryWarning} />
+        )}
       </div>
     </section>
   );

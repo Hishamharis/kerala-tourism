@@ -4,22 +4,32 @@ import { keralaDistrictPaths } from '../../data/keralaMapPaths';
 
 export default function KeralaMap({ onHover, onSelect, selectedDistrict }) {
   const [hoveredPath, setHoveredPath] = useState(null);
+  const [focusedPath, setFocusedPath] = useState(null);
 
   const resolveDistrictName = useCallback((rawName) => {
     const nameMap = {
-      'Thiruvananthapuram': 'Thiruvananthapuram', 'Trivandrum': 'Thiruvananthapuram',
-      'Kollam': 'Kollam', 'Quilon': 'Kollam',
-      'Pathanamthitta': 'Pathanamthitta',
-      'Alappuzha': 'Alappuzha', 'Alleppey': 'Alappuzha',
-      'Kottayam': 'Kottayam', 'Idukki': 'Idukki',
-      'Ernakulam': 'Ernakulam',
-      'Thrissur': 'Thrissur', 'Trichur': 'Thrissur',
-      'Palakkad': 'Palakkad', 'Palghat': 'Palakkad',
-      'Malappuram': 'Malappuram',
-      'Kozhikode': 'Kozhikode', 'Calicut': 'Kozhikode',
-      'Wayanad': 'Wayanad',
-      'Kannur': 'Kannur', 'Cannanore': 'Kannur',
-      'Kasaragod': 'Kasaragod', 'Kasargod': 'Kasaragod',
+      Thiruvananthapuram: 'Thiruvananthapuram',
+      Trivandrum: 'Thiruvananthapuram',
+      Kollam: 'Kollam',
+      Quilon: 'Kollam',
+      Pathanamthitta: 'Pathanamthitta',
+      Alappuzha: 'Alappuzha',
+      Alleppey: 'Alappuzha',
+      Kottayam: 'Kottayam',
+      Idukki: 'Idukki',
+      Ernakulam: 'Ernakulam',
+      Thrissur: 'Thrissur',
+      Trichur: 'Thrissur',
+      Palakkad: 'Palakkad',
+      Palghat: 'Palakkad',
+      Malappuram: 'Malappuram',
+      Kozhikode: 'Kozhikode',
+      Calicut: 'Kozhikode',
+      Wayanad: 'Wayanad',
+      Kannur: 'Kannur',
+      Cannanore: 'Kannur',
+      Kasaragod: 'Kasaragod',
+      Kasargod: 'Kasaragod',
     };
     return nameMap[rawName] || rawName;
   }, []);
@@ -30,8 +40,20 @@ export default function KeralaMap({ onHover, onSelect, selectedDistrict }) {
     return name;
   };
 
+  const handlePathKeyDown = useCallback(
+    (e, name) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onSelect?.(name);
+      }
+    },
+    [onSelect]
+  );
+
   return (
     <svg
+      role="img"
+      aria-label="Interactive map of Kerala districts. Use Tab to focus a district, then Enter or Space to select."
       viewBox="0 0 300 600"
       style={{
         width: '100%',
@@ -44,6 +66,8 @@ export default function KeralaMap({ onHover, onSelect, selectedDistrict }) {
         const info = districtData[name];
         const isSelected = name === selectedDistrict;
         const isHovered = name === hoveredPath;
+        const isFocused = name === focusedPath;
+        const emphasize = isHovered || isSelected || isFocused;
 
         return (
           <g key={name}>
@@ -51,12 +75,17 @@ export default function KeralaMap({ onHover, onSelect, selectedDistrict }) {
               d={item.d}
               className="district-path"
               data-district={name}
+              role="button"
+              tabIndex={0}
+              aria-label={`Explore ${name}`}
               fill={info?.color || '#1A6B3C'}
               fillOpacity={isSelected ? 0.9 : isHovered ? 0.8 : 0.3}
-              stroke={isHovered || isSelected ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)'}
-              strokeWidth={isHovered || isSelected ? 1.5 : 0.5}
+              stroke={emphasize ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.15)'}
+              strokeWidth={emphasize ? 2 : 0.5}
               cursor="pointer"
               style={{ transition: 'fill-opacity 0.2s, stroke 0.2s, stroke-width 0.2s' }}
+              onFocus={() => setFocusedPath(name)}
+              onBlur={() => setFocusedPath((p) => (p === name ? null : p))}
               onMouseEnter={(e) => {
                 setHoveredPath(name);
                 onHover?.(name, { x: e.clientX, y: e.clientY });
@@ -66,6 +95,7 @@ export default function KeralaMap({ onHover, onSelect, selectedDistrict }) {
                 onHover?.(null);
               }}
               onClick={() => onSelect?.(name)}
+              onKeyDown={(e) => handlePathKeyDown(e, name)}
             />
             <text
               x={item.cx}

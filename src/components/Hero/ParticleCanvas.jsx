@@ -1,14 +1,19 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 
 export default function ParticleCanvas() {
   const canvasRef = useRef(null);
+  const [prefersReducedMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
 
   const isMobile = useMemo(() => typeof window !== 'undefined' && window.innerWidth < 768, []);
 
   useEffect(() => {
+    if (prefersReducedMotion) return undefined;
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) return undefined;
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,6 +72,9 @@ export default function ParticleCanvas() {
     let rafId;
     const animate = (time) => {
       rafId = requestAnimationFrame(animate);
+      if (document.hidden) {
+        return;
+      }
       const t = time * 0.001;
 
       const posArr = geometry.attributes.position.array;
@@ -76,7 +84,6 @@ export default function ParticleCanvas() {
         posArr[i * 3 + 1] += v.vy;
         posArr[i * 3 + 2] += v.vz;
 
-        // Reset if particle goes off top
         if (posArr[i * 3 + 1] > 45) {
           posArr[i * 3 + 1] = -45;
           posArr[i * 3] = (Math.random() - 0.5) * 100;
@@ -104,7 +111,11 @@ export default function ParticleCanvas() {
       material.dispose();
       renderer.dispose();
     };
-  }, [isMobile]);
+  }, [isMobile, prefersReducedMotion]);
+
+  if (prefersReducedMotion) {
+    return null;
+  }
 
   return (
     <canvas
@@ -115,6 +126,7 @@ export default function ParticleCanvas() {
         zIndex: 2,
         pointerEvents: 'none',
       }}
+      aria-hidden="true"
     />
   );
 }

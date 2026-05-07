@@ -3,7 +3,8 @@ import styles from './ExperiencesGrid.module.css';
 
 export default function ExperienceCard({ image, title, districts, icon, visitors, rating, bestSeason, delay = 0, onClick }) {
   return (
-    <motion.div
+    <motion.button
+      type="button"
       className={styles.card}
       initial={{ clipPath: 'inset(100% 0 0 0)' }}
       whileInView={{ clipPath: 'inset(0% 0 0 0)' }}
@@ -46,6 +47,7 @@ export default function ExperienceCard({ image, title, districts, icon, visitors
           Explore →
         </span>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }
+

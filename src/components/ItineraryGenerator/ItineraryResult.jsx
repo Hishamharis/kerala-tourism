@@ -1,11 +1,13 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { districtData } from '../../data/districts';
 import { exportItinerary, shareItinerary } from '../../utils/exportItinerary';
+import Toast from '../ui/Toast';
 import styles from './ItineraryGenerator.module.css';
 
-export default function ItineraryResult({ itinerary }) {
+export default function ItineraryResult({ itinerary, warning }) {
   const containerRef = useRef(null);
+  const [toastMsg, setToastMsg] = useState(null);
 
   useEffect(() => {
     if (!itinerary.length || !containerRef.current) return;
@@ -20,9 +22,12 @@ export default function ItineraryResult({ itinerary }) {
   }, [itinerary]);
 
   const handleExport = () => exportItinerary(containerRef.current);
+  const dismissToast = useCallback(() => setToastMsg(null), []);
+
   const handleShare = () => {
     const ok = shareItinerary(itinerary);
-    if (ok) alert('Link copied to clipboard!');
+    if (ok) setToastMsg('Link copied to clipboard!');
+    else setToastMsg('Copy not supported — select the URL from the address bar.');
   };
 
   if (!itinerary.length) return null;
@@ -33,6 +38,12 @@ export default function ItineraryResult({ itinerary }) {
       <p className={styles.resultSub}>
         A preview of your {itinerary.length}-day journey through Kerala.
       </p>
+
+      {warning && (
+        <p className={styles.warningBanner} role="status">
+          {warning}
+        </p>
+      )}
 
       <div className={styles.dayScroll} ref={containerRef}>
         {itinerary.map((day) => {
@@ -72,13 +83,23 @@ export default function ItineraryResult({ itinerary }) {
       </div>
 
       <div className={styles.exportActions}>
-        <button className={`${styles.exportBtn} ${styles.exportBtnSave}`} onClick={handleExport}>
+        <button
+          type="button"
+          className={`${styles.exportBtn} ${styles.exportBtnSave}`}
+          onClick={handleExport}
+        >
           Save Itinerary
         </button>
-        <button className={`${styles.exportBtn} ${styles.exportBtnShare}`} onClick={handleShare}>
+        <button
+          type="button"
+          className={`${styles.exportBtn} ${styles.exportBtnShare}`}
+          onClick={handleShare}
+        >
           Share Link
         </button>
       </div>
+
+      <Toast message={toastMsg} onDismiss={dismissToast} />
     </div>
   );
 }

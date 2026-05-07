@@ -1,19 +1,47 @@
-# React + Vite
+# Kerala Tourism - showcase site
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite single-page experience: interactive district map, AI itinerary generator (Gemini behind a Netlify Function), and curated content sections.
 
-Currently, two official plugins are available:
+Live site: https://kerala-gods-own-country-app.netlify.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
 
-## React Compiler
+| Command | Description |
+|--------|-------------|
+| `npm run dev` | Vite dev server (port 3000). **Itineraries use mock data** - `/api/generate-itinerary` is not available unless proxied. |
+| `npm run build` | Production build -> `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | ESLint |
+| `netlify dev` | Local Netlify environment with Functions (optional; requires [Netlify CLI](https://docs.netlify.com/cli/get-started/)) |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Environment variables
 
-## Expanding the ESLint configuration
+| Variable | Where | Purpose |
+|----------|--------|---------|
+| `GEMINI_API_KEY` | **Netlify dashboard** (and optionally local `.env` for `netlify dev` only) | Used only by `netlify/functions/generate-itinerary.js`. **Never** expose as `VITE_*`. |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+After cloning, copy `.env.example` to `.env` if you use `netlify dev`. For production, set `GEMINI_API_KEY` in Netlify -> Site configuration -> Environment variables.
 
+If the key is missing or the model returns invalid JSON, the function falls back to a deterministic mock itinerary.
 
-Website is live https://kerala-gods-own-country-app.netlify.app/
+## Architecture
+
+- **Frontend:** `src/` - React components, GSAP/Lenis/Three.js for motion where enabled.
+- **API:** `POST /api/generate-itinerary` - rewritten on Netlify to `generate-itinerary` serverless function (`netlify.toml`).
+- **Security:** Gemini calls run only on the server; the browser never sees the API key.
+
+Replace placeholder URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` (`https://example.com`) with your real deploy URL.
+
+## Deployment (Netlify)
+
+1. Connect the repo; build command `npm run build`, publish directory `dist`.
+2. Add environment variable `GEMINI_API_KEY`.
+3. Confirm `netlify.toml` redirects: `/api/generate-itinerary` -> function, SPA fallback for client routes.
+
+## Scope note (demo portfolio)
+
+This project intentionally omits automated tests, error monitoring, analytics, and CI pipelines - add them before a production launch beyond a portfolio demo.
+
+## Rotate keys if exposed
+
+If an API key was ever committed or exposed in the client, revoke it in Google AI Studio / Cloud Console and create a new key stored only as `GEMINI_API_KEY` on the server.

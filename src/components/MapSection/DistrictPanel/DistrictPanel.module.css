@@ -79,6 +79,40 @@
   flex-shrink: 0;
 }
 
+.tabNav {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0;
+}
+
+.tabBtn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 10px 16px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  cursor: pointer;
+}
+
+.tabBtn:hover {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tabBtnActive {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
 .tabBody {
   margin-top: 24px;
 }
